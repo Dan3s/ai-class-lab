@@ -1,5 +1,8 @@
 import re
-from alpha_beta import mini_max_ab, is_game_over
+from random import randint
+
+from alpha_beta import mini_max_ab
+
 _PLAYER = "player"
 _MACHINE = "machine"
 
@@ -13,8 +16,39 @@ class TicTacToeGame():
     self.is_game_over = False
     self.winner = None
 
-  def is_over(self):
-    return is_game_over(self.board)[0]
+  def is_over(self): # TODO: Finish this function by adding checks for a winning game (rows, columns, diagonals)
+    selected_cell = self.board
+    #rows
+    opt1 = (selected_cell[0] == selected_cell[1] == selected_cell[2] and selected_cell[0] is not None, selected_cell[0])
+    opt2 = (selected_cell[3] == selected_cell[4] == selected_cell[5] and selected_cell[3] is not None, selected_cell[3])
+    opt3 = (selected_cell[6] == selected_cell[7] == selected_cell[8] and selected_cell[6] is not None, selected_cell[6])
+    #columns
+    opt4 = (selected_cell[0] == selected_cell[3] == selected_cell[6] and selected_cell[0] is not None, selected_cell[0])
+    opt5 = (selected_cell[1] == selected_cell[4] == selected_cell[7] and selected_cell[1] is not None, selected_cell[1])
+    opt6 = (selected_cell[2] == selected_cell[5] == selected_cell[8] and selected_cell[2] is not None, selected_cell[2])
+    #diagonals
+    opt7 = (selected_cell[0] == selected_cell[4] == selected_cell[8] and selected_cell[0] is not None, selected_cell[0])
+    opt8 = (selected_cell[2] == selected_cell[4] == selected_cell[6] and selected_cell[2] is not None, selected_cell[2])
+
+    opt_list = [opt1, opt2, opt3, opt4, opt5, opt6, opt6, opt7, opt8]
+    draw = False
+    for i in range(0,9):
+
+        if(opt_list[i][0]):
+            if(opt_list[i][1] == _PLAYER_SYMBOL):
+                self.winner= _PLAYER
+                self.is_game_over = True
+            else:
+                self.winner = _MACHINE
+                self.is_game_over = True
+            return True
+
+    if(self.board.count(None) == 0):
+        self.winner = None
+        self.is_game_over = True
+        return True
+
+    return False
 
   def play(self):
     if self.turn == _PLAYER:
@@ -49,8 +83,15 @@ class TicTacToeGame():
 
     self.board[chosen_cell] = _PLAYER_SYMBOL
 
-  def machine_turn(self): # TODO: Use your minimax alpha beta pruning algorithm here to set the machines turn
-    pass
+  def machine_turn(self): # TODO: Finish this function by making the machine choose a random cell (use random module)
+    #value = randint(0,8)
+    #while(self.board[value] is not None):
+     #   value = randint(0,8)
+    #self.board[value] = _MACHINE_SYMBOL
+    #print(mini_max_ab(self.board, False, _MACHINE_SYMBOL, -1, -1)[1])
+    self.board = mini_max_ab(self.board, False, _MACHINE_SYMBOL, -9999, 9999)[1]
+
+
 
   def format_board(self):
     row0 = "|".join(list(map(lambda c: " " if c is None else c, self.board[0:3])))
@@ -64,5 +105,9 @@ class TicTacToeGame():
     print(self.format_board())
     print()
 
-  def print_result(self):
-    print(f"{_PLAYER if is_game_over(self.board)[1] == _PLAYER_SYMBOL else _MACHINE} wins!")
+  def print_result(self): # TODO: Finish this function in order to print the result based on the *winner*
+     print("And winner is: {0}.".format(self.winner) if self.winner is not None else "Draw.")
+
+
+
+  #------------------------------Poda-------------------------------------------
